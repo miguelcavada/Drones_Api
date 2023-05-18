@@ -2,6 +2,8 @@
 using Drones_Api.Data;
 using Drones_Api.Models;
 using Drones_Api.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Drones_Api.Repository
 {
@@ -16,19 +18,18 @@ namespace Drones_Api.Repository
             _mapper = mapper;
         }
 
-        public async Task<DroneDTO> GetById(int id)
+        public async Task<DroneDTO> Get(Expression<Func<Drone, bool>> expression, List<string>? includes = null)
         {
-            try
+            var query = _context.Drones.AsQueryable();
+            if (includes != null)
             {
-                var drone = await _context.Drones.FindAsync(id);
-                var result = _mapper.Map<DroneDTO>(drone);
-                return result;
+                foreach (var includeProp in includes)
+                {
+                    query = query.Include(includeProp);
+                }
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            var result = await query.AsNoTracking().FirstOrDefaultAsync(expression);
+            return _mapper.Map<DroneDTO>(result);
         }
 
         public async Task<DroneDTO> Insert(CreateDroneDTO droneDTO)
@@ -38,8 +39,7 @@ namespace Drones_Api.Repository
                 var newDrone = _mapper.Map<Drone>(droneDTO);
                 await _context.Drones.AddAsync(newDrone);
                 await _context.SaveChangesAsync();
-                var result = _mapper.Map<DroneDTO>(newDrone);
-                return result;
+                return _mapper.Map<DroneDTO>(newDrone);
             }
             catch (Exception)
             {

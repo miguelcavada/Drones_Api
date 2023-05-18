@@ -11,10 +11,10 @@ namespace Drones_Api.Models
         [Required]
         public string? Model { get; set; }
 
-        [MaxLength(500, ErrorMessage = "Maximum length for the WeightLimit is 500 g (grame).")]
+        //[MaxLength(500, ErrorMessage = "Maximum length for the WeightLimit is 500 g (grame).")]
         public int WeightLimit { get; set; }
 
-        [MaxLength(100, ErrorMessage = "Maximum length for the BatteryCapacity is 100 % (percent).")]
+        //[MaxLength(100, ErrorMessage = "Maximum length for the BatteryCapacity is 100 % (percent).")]
         public int BatteryCapacity { get; set; }
 
         public string? State { get; set; }

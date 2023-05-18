@@ -9,6 +9,7 @@ namespace Drones_Api.Configuration
         public MapperInitializer()
         {
             CreateMap<Drone, DroneDTO>().ReverseMap();
+            CreateMap<Drone, CreateDroneDTO>().ReverseMap();
             CreateMap<Medication, MedicationDTO>().ReverseMap();
         }
     }
