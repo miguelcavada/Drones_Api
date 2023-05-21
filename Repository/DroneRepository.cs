@@ -32,14 +32,56 @@ namespace Drones_Api.Repository
             return _mapper.Map<DroneDTO>(result);
         }
 
-        public async Task<DroneDTO> Insert(CreateDroneDTO droneDTO)
+        public async Task<IList<DroneDTO>> GetAll(
+            Expression<Func<Drone, bool>>? expression = null, 
+            Func<IQueryable<Drone>, IOrderedQueryable<Drone>>? orderby = null, 
+            List<string>? includes = null
+            )
+        {
+            var query = _context.Drones.AsQueryable();
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            if (includes != null)
+            {
+                foreach (var includeProp in includes)
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            if (orderby != null)
+            {
+                query = orderby(query);
+            }
+            var result = await query.AsNoTracking().ToListAsync();
+            return _mapper.Map<IList<DroneDTO>>(result);
+        }
+
+        public async Task<DroneDTO> Insert(Drone entity)
         {
             try
             {
-                var newDrone = _mapper.Map<Drone>(droneDTO);
-                await _context.Drones.AddAsync(newDrone);
+                await _context.Drones.AddAsync(entity);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<DroneDTO>(newDrone);
+                return _mapper.Map<DroneDTO>(entity);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<DroneDTO> Update(Drone entity)
+        {
+            try
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return _mapper.Map<DroneDTO>(entity);
             }
             catch (Exception)
             {
