@@ -3,14 +3,17 @@ using Drones_Api.Data;
 using Drones_Api.Repository;
 using Drones_Api.Repository.IRepository;
 using DronesAPI.Models;
+using DronesAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,6 +21,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DronesDB>(options => options.UseInMemoryDatabase("DronesDB"));
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 builder.Services.AddScoped<IDroneRepository, DroneRepository>();
+builder.Services.AddScoped<IDroneLogsRepository, DroneLogsRepository>();
+builder.Services.AddTransient<IHostedService, DroneBatteryHostedService>();
 
 var app = builder.Build();
 

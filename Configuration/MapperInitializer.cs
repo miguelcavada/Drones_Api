@@ -13,6 +13,7 @@ namespace Drones_Api.Configuration
             CreateMap<Drone, UpdatedDroneDTO>().ReverseMap();
             CreateMap<Medication, MedicationDTO>().ReverseMap();
             CreateMap<Medication, CreateMedicationDTO>().ReverseMap();
+            CreateMap<DroneLogs, DroneLogsDTO>().ReverseMap();
         }
     }
 }

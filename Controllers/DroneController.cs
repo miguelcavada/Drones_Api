@@ -14,11 +14,15 @@ namespace Drones_Api.Controllers
     {
         private readonly IDroneRepository _droneRepository;
         private readonly IMapper _mapper;
+        private readonly IDroneLogsRepository _droneLogsRepository;
 
-        public DroneController(IDroneRepository droneRepository, IMapper mapper)
+        public DroneController(IDroneRepository droneRepository,
+            IMapper mapper,
+            IDroneLogsRepository droneLogsRepository)
         {
             _droneRepository = droneRepository;
             _mapper = mapper;
+            _droneLogsRepository = droneLogsRepository;
         }
 
         [HttpGet("{id:int}", Name = "GetDrone")]
@@ -194,6 +198,21 @@ namespace Drones_Api.Controllers
             {
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        [HttpGet("Logs", Name = "GetLogs")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetLogs()
+        {
+            var result = await _droneLogsRepository.GetAll(null, 
+                x => x.OrderByDescending(x => x.CreatedDate));
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
     }
 }

@@ -9,18 +9,18 @@ namespace Drones_Api.Repository
 {
     public class DroneRepository : IDroneRepository
     {
-        private readonly DronesDB _context;
+        private readonly DronesDB _db;
         private readonly IMapper _mapper;
 
-        public DroneRepository(DronesDB context, IMapper mapper)
+        public DroneRepository(DronesDB db, IMapper mapper)
         {
-            _context = context;
+            _db = db;
             _mapper = mapper;
         }
 
         public async Task<DroneDTO> Get(Expression<Func<Drone, bool>> expression, List<string>? includes = null)
         {
-            var query = _context.Drones.AsQueryable();
+            var query = _db.Drones.AsQueryable();
             if (includes != null)
             {
                 foreach (var includeProp in includes)
@@ -33,12 +33,12 @@ namespace Drones_Api.Repository
         }
 
         public async Task<IList<DroneDTO>> GetAll(
-            Expression<Func<Drone, bool>>? expression = null, 
-            Func<IQueryable<Drone>, IOrderedQueryable<Drone>>? orderby = null, 
+            Expression<Func<Drone, bool>>? expression = null,
+            Func<IQueryable<Drone>, IOrderedQueryable<Drone>>? orderby = null,
             List<string>? includes = null
             )
         {
-            var query = _context.Drones.AsQueryable();
+            var query = _db.Drones.AsQueryable();
             if (expression != null)
             {
                 query = query.Where(expression);
@@ -64,8 +64,8 @@ namespace Drones_Api.Repository
         {
             try
             {
-                await _context.Drones.AddAsync(entity);
-                await _context.SaveChangesAsync();
+                await _db.Drones.AddAsync(entity);
+                await _db.SaveChangesAsync();
                 return _mapper.Map<DroneDTO>(entity);
             }
             catch (Exception)
@@ -79,8 +79,8 @@ namespace Drones_Api.Repository
         {
             try
             {
-                _context.Entry(entity).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                _db.Entry(entity).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return _mapper.Map<DroneDTO>(entity);
             }
             catch (Exception)

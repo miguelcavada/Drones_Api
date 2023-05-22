@@ -10,5 +10,6 @@ namespace Drones_Api.Data
 
         public DbSet<Drone> Drones { get; set; }
         public DbSet<Medication> Medications { get; set; }
+        public DbSet<DroneLogs> DroneLogs { get; set; }
     }
 }

@@ -1,3 +1,6 @@
+using Drones_Api.Data;
+using Drones_Api.Models;
+using Drones_Api.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Drones_Api.Controllers
