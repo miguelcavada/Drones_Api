@@ -24,6 +24,14 @@ builder.Services.AddScoped<IDroneRepository, DroneRepository>();
 builder.Services.AddScoped<IDroneLogsRepository, DroneLogsRepository>();
 builder.Services.AddTransient<IHostedService, DroneBatteryHostedService>();
 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowAll", builder =>
+    builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
@@ -45,6 +53,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
